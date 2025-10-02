@@ -25,7 +25,9 @@ import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
+// Using graphics mode Legacy because Robolectric Native graphics mode is not supported on Windows
+// (see https://github.com/robolectric/robolectric/issues/8312).
+@GraphicsMode(GraphicsMode.Mode.LEGACY)
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = RobolectricDeviceQualifiers.PixelXL)
 class ShowcaseSequenceTest {
