@@ -23,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".HighlightOffsetExampleActivity"
+            android:exported="true"
+            android:label="Highlight Offset Test"
+            android:theme="@style/Theme.ComposeShowcase" />
     </application>
 
 </manifest>
