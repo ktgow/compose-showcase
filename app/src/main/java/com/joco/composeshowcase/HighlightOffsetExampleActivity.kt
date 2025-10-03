@@ -86,118 +86,146 @@ fun HighlightOffsetTestContent(
         sequenceShowcaseState.start()
     }
 
-    SequenceShowcase(state = sequenceShowcaseState) {
-        Surface(
+    // Simulate AppNavHost structure with additional padding
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding) // First padding layer (from Scaffold)
+    ) {
+        // Simulate screen-level padding (like PainGraphScreen)
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            color = MaterialTheme.colorScheme.background
+                .padding(16.dp) // Second padding layer (screen padding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Target item 1 - A simple card
-                Card(
+            SequenceShowcase(state = sequenceShowcaseState) {
+                Surface(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .sequenceShowcaseTarget(
-                            index = 0,
-                            //position = ShowcasePosition.Bottom,
-                            alignment = ShowcaseAlignment.CenterHorizontal,
-                            highlight = ShowcaseHighlight.Rectangular(8.dp),
-                            animationDuration = AnimationDuration.Default,
-                            backgroundAlpha = BackgroundAlpha.Normal,
-                            content = { _ ->
-                                HighlightOffsetTestDialog(
-                                    text = "Testing highlight offset bug. Check if the highlight is positioned correctly around this card.",
-                                    onClick = { sequenceShowcaseState.next() }
-                                )
-                            }
-                        ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        .fillMaxSize()
+                        .padding(8.dp), // Third padding layer (component padding)
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = "Star",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Highlight Test Card",
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "This card tests highlight positioning within a Scaffold. The highlight should align perfectly with the card boundaries.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
-
-                // Target item 2 - A simple button
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = { /* Button action */ },
                         modifier = Modifier
-                            .sequenceShowcaseTarget(
-                                index = 1,
-                                //position = ShowcasePosition.Top,
-                                alignment = ShowcaseAlignment.CenterHorizontal,
-                                highlight = ShowcaseHighlight.Circular(targetMargin = 8.dp),
-                                animationDuration = AnimationDuration.Default,
-                                backgroundAlpha = BackgroundAlpha.Normal,
-                                content = { _ ->
-                                    HighlightOffsetTestDialog(
-                                        text = "Testing circular highlight offset. Verify the circular highlight centers correctly on this button.",
-                                        onClick = { sequenceShowcaseState.dismiss() }
+                            .fillMaxWidth()
+                            .padding(16.dp), // Fourth padding layer (content padding)
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Add some content at the top to make padding more visible
+                        Text(
+                            text = "Testing Multiple Padding Layers",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = "This simulates the complex app structure with multiple padding layers that may cause coordinate system mismatches.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+
+                        // Target item 1 - A simple card
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .sequenceShowcaseTarget(
+                                    index = 0,
+                                    //position = ShowcasePosition.Bottom,
+                                    alignment = ShowcaseAlignment.CenterHorizontal,
+                                    highlight = ShowcaseHighlight.Rectangular(8.dp),
+                                    animationDuration = AnimationDuration.Default,
+                                    backgroundAlpha = BackgroundAlpha.Normal,
+                                    content = { _ ->
+                                        HighlightOffsetTestDialog(
+                                            text = "Testing highlight offset bug. Check if the highlight is positioned correctly around this card.",
+                                            onClick = { sequenceShowcaseState.next() }
+                                        )
+                                    }
+                                ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Star,
+                                        contentDescription = "Star",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = "Highlight Test Card",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
                                     )
                                 }
-                            )
-                    ) {
-                        Text("Test Button")
-                    }
-                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "This card tests highlight positioning within a Scaffold. The highlight should align perfectly with the card boundaries.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                        }
 
-                // Some additional content to make the screen more interesting
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Reference Content",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "This card is not a showcase target. It provides visual context to help identify any highlight positioning issues.",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        // Target item 2 - A simple button
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Button(
+                                onClick = { /* Button action */ },
+                                modifier = Modifier
+                                    .sequenceShowcaseTarget(
+                                        index = 1,
+                                        //position = ShowcasePosition.Top,
+                                        alignment = ShowcaseAlignment.CenterHorizontal,
+                                        highlight = ShowcaseHighlight.Circular(targetMargin = 8.dp),
+                                        animationDuration = AnimationDuration.Default,
+                                        backgroundAlpha = BackgroundAlpha.Normal,
+                                        content = { _ ->
+                                            HighlightOffsetTestDialog(
+                                                text = "Testing circular highlight offset. Verify the circular highlight centers correctly on this button.",
+                                                onClick = { sequenceShowcaseState.dismiss() }
+                                            )
+                                        }
+                                    )
+                            ) {
+                                Text("Test Button")
+                            }
+                        }
+
+                        // Some additional content to make the screen more interesting
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "Reference Content",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "This card is not a showcase target. It provides visual context to help identify any highlight positioning issues.",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
                     }
                 }
             }
