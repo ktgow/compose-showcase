@@ -1,5 +1,6 @@
 package com.joco.showcaseview.highlight
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -11,6 +12,6 @@ import androidx.compose.ui.layout.LayoutCoordinates
  * @property highlightBounds The bounds of the highlight around the target element.
  */
 class HighlightProperties internal constructor(
-    val drawHighlight: DrawScope.(LayoutCoordinates) -> Unit,
+    val drawHighlight: DrawScope.(LayoutCoordinates, Offset) -> Unit,
     val highlightBounds: Rect
 )

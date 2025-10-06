@@ -14,9 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -25,6 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -61,6 +64,8 @@ fun ShowcaseView(
         return
     }
 
+    val viewPosition = remember { mutableStateOf<LayoutCoordinates?>(null) }
+
     val transition =  remember { MutableTransitionState(false) }
     val highlightDrawer = highlight.create(targetCoordinates = targetCoordinates)
 
@@ -69,17 +74,33 @@ fun ShowcaseView(
         enter = fadeIn(tween(animationDuration.enterMillis)),
         exit = fadeOut(tween(animationDuration.exitMillis))
     ) {
-        Box {
+        Box(modifier = Modifier.onGloballyPositioned {
+            viewPosition.value = it
+        }) {
+            val viewOffset = Offset(
+                x = if (viewPosition.value != null && viewPosition.value!!.isAttached) {
+                    -viewPosition.value!!.positionInRoot().x
+                } else {
+                    0f
+                },
+                y = if (viewPosition.value != null && viewPosition.value!!.isAttached) {
+                    -viewPosition.value!!.positionInRoot().y
+                } else {
+                    0f
+                }
+            )
+
             ShowcaseBackground(
                 coordinates = targetCoordinates,
+                viewOffset = viewOffset,
                 drawHighlight = highlightDrawer.drawHighlight,
                 backgroundAlpha = backgroundAlpha
             )
             ShowcaseDialog(
-                targetRect = targetCoordinates.boundsInRoot(),
+                targetRect = targetCoordinates.boundsInRoot().translate(viewOffset),
                 position = position,
                 alignment = alignment,
-                highlightBounds = highlightDrawer.highlightBounds,
+                highlightBounds = highlightDrawer.highlightBounds.translate(viewOffset),
                 content = dialog
             )
         }
@@ -107,8 +128,9 @@ fun ShowcaseView(
 @Composable
 private fun ShowcaseBackground(
     coordinates: LayoutCoordinates,
+    viewOffset: Offset,
     backgroundAlpha: BackgroundAlpha,
-    drawHighlight: DrawScope.(LayoutCoordinates) -> Unit
+    drawHighlight: DrawScope.(LayoutCoordinates, Offset) -> Unit
 ) {
     Canvas(
         modifier = Modifier
@@ -120,7 +142,7 @@ private fun ShowcaseBackground(
             Color.Black.copy(alpha = backgroundAlpha.value),
             size = Size(size.width, size.height)
         )
-        drawHighlight(coordinates)
+        drawHighlight(coordinates, viewOffset)
     }
 }
 

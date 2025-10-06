@@ -31,13 +31,16 @@ sealed interface ShowcaseHighlight {
         override fun create(
             targetCoordinates: LayoutCoordinates
         ): HighlightProperties {
-            val highlightBounds = createHighlightBounds(
-                targetCoordinates.boundsInRoot(),
-                with(LocalDensity.current) { 8.dp.toPx() }
-            )
+            val targetMargin = with(LocalDensity.current) { 8.dp.toPx() }
             return HighlightProperties(
-                drawHighlight = { rectangularHighlight(cornerRadius.toPx(), highlightBounds) },
-                highlightBounds = highlightBounds
+                drawHighlight = { updatedTargetCoordinates: LayoutCoordinates, offset: Offset ->
+                    val highlightBounds = createHighlightBounds(
+                        updatedTargetCoordinates.boundsInRoot().translate(offset.x, offset.y),
+                        targetMargin
+                    )
+                    rectangularHighlight(cornerRadius.toPx(), highlightBounds)
+                },
+                highlightBounds = targetCoordinates.boundsInRoot()
             )
         }
 
@@ -82,7 +85,9 @@ sealed interface ShowcaseHighlight {
         override fun create(targetCoordinates: LayoutCoordinates): HighlightProperties {
             val targetMargin = with(LocalDensity.current) { targetMargin.toPx() }
             return HighlightProperties(
-                drawHighlight = { circularHighlight(it, targetMargin) },
+                drawHighlight = { updatedTargetCoordinates: LayoutCoordinates, offset: Offset ->
+                    circularHighlight(updatedTargetCoordinates, offset, targetMargin)
+                },
                 highlightBounds = createHighlightBounds(
                     targetCoordinates.boundsInRoot(),
                     targetMargin = targetMargin
@@ -98,9 +103,10 @@ sealed interface ShowcaseHighlight {
          */
         private fun DrawScope.circularHighlight(
             coordinates: LayoutCoordinates,
+            offset: Offset,
             targetMargin: Float
         ) {
-            val targetRect = coordinates.boundsInRoot()
+            val targetRect = coordinates.boundsInRoot().translate(offset.x, offset.y)
             val xOffset = targetRect.topLeft.x
             val yOffset = targetRect.topLeft.y
             val rectSize = coordinates.boundsInParent().size

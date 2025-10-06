@@ -41,13 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.joco.composeshowcase.ui.theme.ComposeShowcaseTheme
 import com.joco.showcase.sequence.SequenceShowcase
-import com.joco.showcase.sequence.SequenceShowcaseScope
-import com.joco.showcase.sequence.SequenceShowcaseState
 import com.joco.showcase.sequence.rememberSequenceShowcaseState
-import com.joco.showcaseview.AnimationDuration
-import com.joco.showcaseview.BackgroundAlpha
 import com.joco.showcaseview.ShowcaseAlignment
-import com.joco.showcaseview.ShowcasePosition
 import com.joco.showcaseview.highlight.ShowcaseHighlight
 
 class HighlightOffsetExampleActivity : ComponentActivity() {
