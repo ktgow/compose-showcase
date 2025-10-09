@@ -7,6 +7,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -24,6 +27,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -68,6 +72,18 @@ fun ShowcaseView(
 
     val transition =  remember { MutableTransitionState(false) }
     val highlightDrawer = highlight.create(targetCoordinates = targetCoordinates)
+    if (visible && !transition.currentState) {
+        // Disable clicks on the entire screen when we're transitioning between two views.
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {}
+                    )
+            )
+    }
 
     AnimatedVisibility(
         visibleState = transition,
@@ -136,7 +152,17 @@ private fun ShowcaseBackground(
         modifier = Modifier
             .fillMaxSize()
             .graphicsLayer(alpha = backgroundAlpha.value)
-    ) {
+            .pointerInput(Unit) {
+                // Disable clicks on anything in the background.
+                awaitEachGesture {
+                    val event = awaitPointerEvent()
+                    event.changes.forEach { pointerInputChange ->
+                        // Consume the pointer event to prevent it from propagating further
+                        pointerInputChange.consume()
+                    }
+                }
+            }
+        ) {
         // Overlay
         drawRect(
             Color.Black.copy(alpha = backgroundAlpha.value),
