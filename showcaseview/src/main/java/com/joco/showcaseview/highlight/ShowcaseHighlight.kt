@@ -34,11 +34,16 @@ sealed interface ShowcaseHighlight {
             val targetMargin = with(LocalDensity.current) { 8.dp.toPx() }
             return HighlightProperties(
                 drawHighlight = { updatedTargetCoordinates: LayoutCoordinates, offset: Offset ->
-                    val highlightBounds = createHighlightBounds(
-                        updatedTargetCoordinates.boundsInRoot().translate(offset.x, offset.y),
-                        targetMargin
-                    )
-                    rectangularHighlight(cornerRadius.toPx(), highlightBounds)
+                    if (updatedTargetCoordinates.isAttached) {
+                        val highlightBounds = createHighlightBounds(
+                            updatedTargetCoordinates.boundsInRoot().translate(offset.x, offset.y),
+                            targetMargin
+                        )
+                        rectangularHighlight(cornerRadius.toPx(), highlightBounds)
+                    } else {
+                        // This should only hit temporarily when the target element is no longer attached. This should prevent a crash.
+                        rectangularHighlight(cornerRadius.toPx(), Rect(0f, 0f, 0f, 0f))
+                    }
                 },
                 highlightBounds = targetCoordinates.boundsInRoot()
             )
