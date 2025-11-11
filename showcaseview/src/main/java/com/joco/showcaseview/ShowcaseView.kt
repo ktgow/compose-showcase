@@ -215,6 +215,7 @@ private fun ShowcaseDialog(
                     ShowcaseAlignment.Start -> highlightBounds.left
                     ShowcaseAlignment.End -> highlightBounds.right - dialogWidth
                     ShowcaseAlignment.CenterHorizontal -> (highlightCenterX - dialogWidth / 2)
+                    ShowcaseAlignment.AbsoluteCenter -> (screenWidth - dialogWidth) / 2
                     ShowcaseAlignment.Default -> {
                         if (highlightCenterX > screenWidth / 2) {
                             highlightBounds.right - dialogWidth
@@ -227,6 +228,7 @@ private fun ShowcaseDialog(
                 offsetY = when (position) {
                     ShowcasePosition.Top -> highlightBounds.top - verticalSpacerPx - dialogHeight
                     ShowcasePosition.Bottom -> highlightBounds.bottom + verticalSpacerPx
+                    ShowcasePosition.AbsoluteCenter -> (screenHeight - dialogHeight) / 2
                     ShowcasePosition.Default -> {
                         if (targetRect.center.y > screenHeight / 2 + verticalSpacerPx) {
                             highlightBounds.top - verticalSpacerPx - dialogHeight

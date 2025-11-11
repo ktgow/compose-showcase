@@ -14,5 +14,6 @@ sealed interface ShowcaseAlignment {
     data object Start : ShowcaseAlignment
     data object End : ShowcaseAlignment
     data object CenterHorizontal : ShowcaseAlignment
+    data object AbsoluteCenter : ShowcaseAlignment
     data object Default : ShowcaseAlignment
 }
